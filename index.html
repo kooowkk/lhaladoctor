@@ -443,19 +443,36 @@
 
 <script>
   (function(){
-    var btn=document.getElementById('submitBtn');
-    btn.addEventListener('click',function(){
-      var org=document.getElementById('org').value.trim();
-      var name=document.getElementById('name').value.trim();
-      var phone=document.getElementById('phone').value.trim();
-      var agree=document.getElementById('agree').checked;
-      if(!org){alert('병원·기관명을 입력해 주세요.');return;}
-      if(!name){alert('담당자명을 입력해 주세요.');return;}
-      if(!phone){alert('연락처를 입력해 주세요.');return;}
-      if(!agree){alert('개인정보 수집·이용에 동의해 주세요.');return;}
-      // 실제 운영 시: 여기서 값을 백엔드/메일/스프레드시트로 전송 연결
-      document.getElementById('formBody').style.display='none';
-      document.getElementById('done').style.display='block';
+    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1KRdA0Wd_bn9BZllUMGyPjdABiHXYejGBZayEy50PegxVELjQFgugY0Qwqv6la8jk/exec';
+    var btn = document.getElementById('submitBtn');
+    btn.addEventListener('click', function(){
+      var org   = document.getElementById('org').value.trim();
+      var name  = document.getElementById('name').value.trim();
+      var phone = document.getElementById('phone').value.trim();
+      var memo  = document.getElementById('memo').value.trim();
+      var agree = document.getElementById('agree').checked;
+      if(!org)  { alert('병원·기관명을 입력해 주세요.'); return; }
+      if(!name) { alert('담당자명을 입력해 주세요.'); return; }
+      if(!phone){ alert('연락처를 입력해 주세요.'); return; }
+      if(!agree){ alert('개인정보 수집·이용에 동의해 주세요.'); return; }
+
+      btn.disabled = true;
+      btn.textContent = '전송 중...';
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hospital: org, name: name, phone: phone, message: memo })
+      })
+      .then(function(){ 
+        document.getElementById('formBody').style.display = 'none';
+        document.getElementById('done').style.display = 'block';
+      })
+      .catch(function(){ 
+        alert('전송 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        btn.disabled = false;
+        btn.textContent = '상담 신청하기';
+      });
     });
   })();
 </script>
