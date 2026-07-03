@@ -426,21 +426,19 @@
       btn.disabled = true;
       btn.textContent = '전송 중...';
 
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ hospital: org, name: name, phone: phone, message: memo })
-      })
-      .then(function(){
+      var url = SCRIPT_URL
+        + '?hospital=' + encodeURIComponent(org)
+        + '&name=' + encodeURIComponent(name)
+        + '&phone=' + encodeURIComponent(phone)
+        + '&message=' + encodeURIComponent(memo);
+
+      var img = new Image();
+      img.src = url;
+
+      setTimeout(function(){
         document.getElementById('formBody').style.display = 'none';
         document.getElementById('done').style.display = 'block';
-      })
-      .catch(function(){
-        alert('전송 중 오류가 발생했습니다. 다시 시도해 주세요.');
-        btn.disabled = false;
-        btn.textContent = '상담 신청하기';
-      });
+      }, 2000);
     });
   })();
 </script>
